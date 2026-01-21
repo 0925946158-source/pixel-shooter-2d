@@ -30,3 +30,14 @@
     </script>
 </body>
 </html>
+// গুলি এবং শত্রু যোগ করার কোড
+const bullets = [];
+const enemies = [];
+
+window.addEventListener('mousedown', () => {
+    bullets.push({ bx: x + 15, by: y, speed: 7 });
+});
+
+setInterval(() => {
+    enemies.push({ ex: Math.random() * 460, ey: 0, speed: 2 });
+}, 2000);

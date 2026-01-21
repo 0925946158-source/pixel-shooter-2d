@@ -4,24 +4,23 @@
     <title>Pixel Shooter 2D</title>
     <style>
         body { margin: 0; background: black; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; overflow: hidden; font-family: sans-serif; }
-        canvas { border: 2px solid #555; background: #111; }
+        canvas { border: 2px solid white; background: #222; }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="500" height="600"></canvas>
+    <canvas id="gameCanvas" width="500" height="400"></canvas>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let x = 230, y = 530; // প্লেয়ারের পজিশন
-        let score = 0;
+        let x = 230, y = 350; 
         const bullets = [];
         const enemies = [];
 
         // প্লেয়ার মুভমেন্ট
         window.addEventListener('keydown', (e) => {
-            if(e.key === 'ArrowLeft' && x > 0) x -= 20;
-            if(e.key === 'ArrowRight' && x < 460) x += 20;
+            if(e.key === 'ArrowLeft' && x > 0) x -= 15;
+            if(e.key === 'ArrowRight' && x < 460) x += 15;
         });
 
         // মাউস ক্লিকে গুলি
@@ -29,7 +28,7 @@
             bullets.push({ bx: x + 18, by: y, speed: 7 });
         });
 
-        // শত্রু তৈরি (Enemies)
+        // শত্রু তৈরি
         setInterval(() => {
             enemies.push({ ex: Math.random() * 460, ey: 0, speed: 2 });
         }, 1500);
@@ -37,40 +36,32 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // প্লেয়ার আঁকা (Green Box)
+            // প্লেয়ার (Green Box)
             ctx.fillStyle = 'lime';
             ctx.fillRect(x, y, 40, 40);
 
-            // গুলি চালানো এবং সংঘর্ষ চেক
+            // গুলি চালানো
             ctx.fillStyle = 'yellow';
             bullets.forEach((b, bi) => {
                 b.by -= b.speed;
-                ctx.fillRect(b.bx, b.by, 4, 10);
+                ctx.fillRect(b.bx, b.by, 5, 10);
                 if(b.by < 0) bullets.splice(bi, 1);
             });
 
-            // শত্রু এবং স্কোর আপডেট
+            // শত্রু তৈরি এবং সংঘর্ষ চেক
             ctx.fillStyle = 'red';
             enemies.forEach((e, ei) => {
                 e.ey += e.speed;
                 ctx.fillRect(e.ex, e.ey, 40, 40);
 
-                // গুলি দিয়ে শত্রু মারা
+                // গুলির সাথে শত্রুর সংঘর্ষ
                 bullets.forEach((b, bi) => {
-                    if (b.bx < e.ex + 40 && b.bx + 4 > e.ex && b.by < e.ey + 40) {
+                    if (b.bx < e.ex + 40 && b.bx + 5 > e.ex && b.by < e.ey + 40) {
                         enemies.splice(ei, 1);
                         bullets.splice(bi, 1);
-                        score += 10;
                     }
                 });
-
-                if(e.ey > 600) enemies.splice(ei, 1); // নিচে গেলে ডিলিট
             });
-
-            // স্কোর প্রদর্শন
-            ctx.fillStyle = 'white';
-            ctx.font = '20px Arial';
-            ctx.fillText("Score: " + score, 10, 30);
 
             requestAnimationFrame(draw);
         }
